@@ -1,0 +1,14 @@
+traffic_dw_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      user: "{{ env_var('POSTGRES_USER', 'postgres') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'postgres_traffic_2026') }}"
+      port: 5433
+      dbname: "{{ env_var('POSTGRES_DB', 'traffic_dw') }}"
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+

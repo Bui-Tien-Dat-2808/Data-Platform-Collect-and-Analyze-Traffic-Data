@@ -1,0 +1,67 @@
+# ==========================================
+# 1. BẢO MẬT: TUYỆT ĐỐI KHÔNG PUSH API KEY & MẬT KHẨU
+# ==========================================
+.env
+*.env
+!.env.example
+
+# ==========================================
+# 2. PYTHON VIRTUAL ENVIRONMENT & CACHE
+# ==========================================
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ==========================================
+# 3. DỮ LIỆU NẶNG (DATA LAKE / PARQUET / BRONZE)
+# Dữ liệu lớn không đẩy lên git, chỉ đẩy code xử lý
+# ==========================================
+data/
+data/*
+collector/sample_batch.json
+*.parquet
+*.snappy
+*.csv
+*.json.gz
+
+# ==========================================
+# 4. DBT (DATA BUILD TOOL)
+# ==========================================
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+target/
+dbt_packages/
+logs/
+
+# ==========================================
+# 5. DOCKER & HẠ TẦNG DATA
+# ==========================================
+postgres_data/
+minio_data/
+kafka_data/
+
+# ==========================================
+# 6. POWER BI
+# File tạm và cache của Power BI
+# ==========================================
+*.tmp
+*.~*
+*.pbix~*
+
+# ==========================================
+# 7. IDE & HỆ ĐIỀU HÀNH
+# ==========================================
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+

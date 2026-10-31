@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: fact_traffic_flow_15min
+    description: "Bảng sự kiện lưu trạng thái lưu thông 15 phút tại từng điểm giám sát"
+    columns:
+      - name: fact_id
+        tests:
+          - unique
+          - not_null
+      - name: current_speed_kmh
+        tests:
+          - not_null
+      - name: speed_reduction_ratio_pct
+        tests:
+          - not_null
+      - name: congestion_level
+        tests:
+          - accepted_values:
+              values: ['LOW / FREE_FLOW', 'MODERATE', 'HEAVY / CONGESTED']
+
+  - name: fact_hourly_traffic_summary
+    description: "Bảng tổng hợp vận tốc và độ trễ theo từng giờ"
+    columns:
+      - name: point_id
+        tests:
+          - not_null
+      - name: hourly_congestion_status
+        tests:
+          - accepted_values:
+              values: ['SMOOTH', 'SLIGHT_DELAY', 'SEVERE_CONGESTION']
+
