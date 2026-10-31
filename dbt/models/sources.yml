@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: silver_traffic
+    database: traffic_dw
+    schema: public
+    tables:
+      - name: stg_traffic_flow
+        description: "Bảng dữ liệu giao thông tầng Silver nạp vào PostgreSQL phục vụ dbt modeling"
+

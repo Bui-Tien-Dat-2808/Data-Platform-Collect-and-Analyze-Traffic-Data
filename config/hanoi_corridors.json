@@ -1,0 +1,114 @@
+{
+  "city": "Hanoi",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "corridors": [
+    {
+      "corridor_id": "CR_NGUYEN_TRAI",
+      "corridor_name": "Trục Nguyễn Trãi - Tây Sơn",
+      "district": "Thanh Xuân - Đống Đa",
+      "monitoring_points": [
+        {
+          "point_id": "NT_01",
+          "name": "Nguyễn Trãi (Gần Ngã Tư Sở)",
+          "latitude": 21.0028,
+          "longitude": 105.8198
+        },
+        {
+          "point_id": "NT_02",
+          "name": "Nguyễn Trãi (Đoạn ĐH KHXH&NV)",
+          "latitude": 20.9954,
+          "longitude": 105.8087
+        },
+        {
+          "point_id": "TS_01",
+          "name": "Tây Sơn (Gần ĐH Thủy Lợi)",
+          "latitude": 21.0084,
+          "longitude": 105.8249
+        }
+      ]
+    },
+    {
+      "corridor_id": "CR_VANH_DAI_3",
+      "corridor_name": "Trục Vành Đai 3 (Khuất Duy Tiến - Phạm Hùng)",
+      "district": "Cầu Giấy - Thanh Xuân - Nam Từ Liêm",
+      "monitoring_points": [
+        {
+          "point_id": "VD3_01",
+          "name": "Nút giao Khuất Duy Tiến - Nguyễn Trãi",
+          "latitude": 20.9922,
+          "longitude": 105.7983
+        },
+        {
+          "point_id": "VD3_02",
+          "name": "Khuất Duy Tiến - Lê Văn Lương",
+          "latitude": 21.0039,
+          "longitude": 105.7925
+        },
+        {
+          "point_id": "VD3_03",
+          "name": "Phạm Hùng (Trước Trung tâm Hội nghị Quốc gia)",
+          "latitude": 21.0098,
+          "longitude": 105.7877
+        }
+      ]
+    },
+    {
+      "corridor_id": "CR_CAU_GIAY",
+      "corridor_name": "Trục Cầu Giấy - Kim Mã",
+      "district": "Cầu Giấy - Ba Đình",
+      "monitoring_points": [
+        {
+          "point_id": "CG_01",
+          "name": "Cầu Giấy (Ngã tư Xuân Thủy - Trần Thái Tông)",
+          "latitude": 21.0366,
+          "longitude": 105.7845
+        },
+        {
+          "point_id": "KM_01",
+          "name": "Kim Mã (Gần Lotte Center)",
+          "latitude": 21.0318,
+          "longitude": 105.8123
+        }
+      ]
+    },
+    {
+      "corridor_id": "CR_VANH_DAI_1",
+      "corridor_name": "Trục Xã Đàn - Đại Cồ Việt",
+      "district": "Đống Đa - Hai Bà Trưng",
+      "monitoring_points": [
+        {
+          "point_id": "XD_01",
+          "name": "Xã Đàn (Ngã tư Ô Chợ Dừa)",
+          "latitude": 21.0189,
+          "longitude": 105.8286
+        },
+        {
+          "point_id": "DCV_01",
+          "name": "Đại Cồ Việt (Hầm Kim Liên)",
+          "latitude": 21.0116,
+          "longitude": 105.8427
+        }
+      ]
+    },
+    {
+      "corridor_id": "CR_GIAI_PHONG",
+      "corridor_name": "Trục Giải Phóng - Lê Duẩn",
+      "district": "Hoàng Mai - Hai Bà Trưng",
+      "monitoring_points": [
+        {
+          "point_id": "GP_01",
+          "name": "Giải Phóng (Gần BV Bạch Mai / ĐH Bách Khoa)",
+          "latitude": 21.0006,
+          "longitude": 105.8409
+        },
+        {
+          "point_id": "GP_02",
+          "name": "Giải Phóng (Ngã ba Bến xe Giáp Bát)",
+          "latitude": 20.9815,
+          "longitude": 105.8421
+        }
+      ]
+    }
+  ]
+}
+
