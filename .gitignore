@@ -20,7 +20,6 @@ __pycache__/
 
 # ==========================================
 # 3. DỮ LIỆU NẶNG (DATA LAKE / PARQUET / BRONZE)
-# Dữ liệu lớn không đẩy lên git, chỉ đẩy code xử lý
 # ==========================================
 data/
 data/*
@@ -49,7 +48,6 @@ kafka_data/
 
 # ==========================================
 # 6. POWER BI
-# File tạm và cache của Power BI
 # ==========================================
 *.tmp
 *.~*
