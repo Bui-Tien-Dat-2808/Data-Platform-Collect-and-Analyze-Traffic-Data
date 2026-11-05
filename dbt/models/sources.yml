@@ -8,3 +8,5 @@ sources:
       - name: stg_traffic_flow
         description: "Bảng dữ liệu giao thông tầng Silver nạp vào PostgreSQL phục vụ dbt modeling"
 
+      - name: stg_traffic_incidents
+        description: "Bảng dữ liệu sự cố giao thông tầng Silver nạp vào PostgreSQL phục vụ dbt modeling"
