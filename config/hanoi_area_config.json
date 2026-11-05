@@ -1,0 +1,11 @@
+{
+  "city": "Hanoi",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "bbox": {
+    "min_lon": 105.7,
+    "min_lat": 20.9,
+    "max_lon": 105.95,
+    "max_lat": 21.1
+  },
+  "bbox_area": "HANOI"
+}
