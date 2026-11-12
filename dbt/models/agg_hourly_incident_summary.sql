@@ -5,6 +5,7 @@
 SELECT
     date_key,
     hour_key,
+    EXTRACT(DOW FROM fetched_at_vn) AS day_of_week,
     incident_type,
     type_label,
     COUNT(DISTINCT incident_id) AS total_incidents,
@@ -16,5 +17,6 @@ FROM {{ ref('fact_traffic_incidents') }}
 GROUP BY 
     date_key,
     hour_key,
+    EXTRACT(DOW FROM fetched_at_vn),
     incident_type,
     type_label
