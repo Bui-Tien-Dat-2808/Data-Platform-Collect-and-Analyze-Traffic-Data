@@ -1,5 +1,5 @@
 # ==========================================
-# 1. BẢO MẬT
+# 1. SECURITY & ENVIRONMENT VARIABLES
 # ==========================================
 .env
 *.env
@@ -62,4 +62,5 @@ kafka_data/
 *.swo
 .DS_Store
 Thumbs.db
+.agent/
 
