@@ -598,6 +598,18 @@ def save_silver_parquet(
             / f"incidents_{batch_timestamp}.parquet"
         )
 
+        # Merge deduplicate nếu đã có file Parquet của partition trong ngày
+        if file_path.exists():
+            try:
+                existing_df = pd.read_parquet(file_path)
+                combined_df = pd.concat([existing_df, partition_df], ignore_index=True)
+                partition_df = combined_df.drop_duplicates(
+                    subset=["incident_id", "fetched_at_utc"],
+                    keep="last"
+                )
+            except Exception as e:
+                logger.warning("Không thể đọc file Parquet hiện có để merge (%s): %s", file_path, e)
+
         partition_df.to_parquet(
             file_path,
             engine="pyarrow",

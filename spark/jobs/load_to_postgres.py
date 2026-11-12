@@ -16,7 +16,7 @@ DB_HOST = os.getenv("POSTGRES_HOST", "127.0.0.1")
 DB_PORT = os.getenv("POSTGRES_PORT", "5433")
 DB_NAME = os.getenv("POSTGRES_DB", "traffic_dw")
 DB_USER = os.getenv("POSTGRES_USER", "postgres")
-DB_PASS = os.getenv("POSTGRES_PASSWORD", "***REMOVED***")
+DB_PASS = os.getenv("POSTGRES_PASSWORD")
 
 def load_silver_to_postgres(parquet_path: str = "data/silver_traffic_parquet"):
     print(f"Reading Parquet datasets from {parquet_path}...")
@@ -55,17 +55,22 @@ def load_silver_to_postgres(parquet_path: str = "data/silver_traffic_parquet"):
             congestion_level VARCHAR(50),
             timestamp_vn TIMESTAMP
         );
-        TRUNCATE TABLE stg_traffic_flow;
+        CREATE UNIQUE INDEX IF NOT EXISTS uq_stg_traffic_flow_point_time 
+        ON stg_traffic_flow (point_id, timestamp_vn);
     """)
 
     cols = list(df.columns)
     col_str = ", ".join(cols)
     values = [tuple(None if pd.isna(val) else val for val in row) for row in df.itertuples(index=False)]
-    insert_query = f"INSERT INTO stg_traffic_flow ({col_str}) VALUES %s"
+    insert_query = f"""
+        INSERT INTO stg_traffic_flow ({col_str}) 
+        VALUES %s
+        ON CONFLICT (point_id, timestamp_vn) DO NOTHING
+    """
     
     execute_values(cur, insert_query, values)
     conn.commit()
-    print(f"Successfully loaded {len(values)} records into PostgreSQL table 'stg_traffic_flow'!")
+    print(f"Successfully loaded/upserted {len(values)} records into PostgreSQL table 'stg_traffic_flow'!")
     cur.close()
     conn.close()
 
