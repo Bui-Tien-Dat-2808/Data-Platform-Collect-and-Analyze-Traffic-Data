@@ -217,33 +217,34 @@ def fetch_incidents(bbox, api_key, max_retries=3):
                 return response.json()
 
             if response.status_code == 429:
-                logger.warning("TomTom API giới hạn request (429)")
-
+                logger.warning(
+                    "TomTom API giới hạn request (429) ở lần thử %s/%s",
+                    attempt + 1,
+                    max_retries
+                )
             else:
                 response.raise_for_status()
 
         except requests.Timeout:
-            logger.warning("Request timeout")
+            logger.warning(
+                "Request timeout ở lần thử %s/%s",
+                attempt + 1,
+                max_retries
+            )
 
         except requests.RequestException as error:
-            # Không retry các lỗi HTTP thông thường,
-            # trừ lỗi 429 đã được xử lý phía trên.
-            if (
-                getattr(error.response, "status_code", None)
-                != 429
-            ):
+            status_code = getattr(error.response, "status_code", None)
+            if status_code != 429:
+                logger.error("Lỗi HTTP không thể retry: %s", error)
                 raise
-
-            logger.warning("API trả về lỗi 429")
+            logger.warning("TomTom API trả về lỗi 429 qua exception")
 
         if attempt < max_retries - 1:
             wait_seconds = 2 ** (attempt + 1)
-
             logger.info(
                 "Chờ %s giây trước khi thử lại...",
                 wait_seconds
             )
-
             time.sleep(wait_seconds)
 
     raise RuntimeError(
@@ -349,8 +350,6 @@ def run_collector(config_path=CONFIG_PATH):
 
     fetched_at = datetime.now(timezone.utc)
 
-    batch_timestamp = fetched_at.strftime("%Y%m%d_%H%M%S")
-
     # Payload Bronze
     output_data = {
         "metadata": {
@@ -367,7 +366,7 @@ def run_collector(config_path=CONFIG_PATH):
     # Lưu local
     local_file = save_local_json(output_data)
 
-    # Upload MinIO
+    # Upload MinIO sử dụng cùng timestamp fetched_at
     object_name = upload_to_minio_bronze(
         local_file,
         fetched_at
