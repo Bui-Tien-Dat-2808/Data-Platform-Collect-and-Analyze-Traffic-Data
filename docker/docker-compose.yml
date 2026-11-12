@@ -58,6 +58,90 @@ services:
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
+  # ---------------------------------------------
+  # 4. AIRFLOW WEBSERVER & SCHEDULER (LocalExecutor)
+  # ---------------------------------------------
+  airflow-init:
+    image: apache/airflow:2.8.1-python3.10
+    container_name: traffic_airflow_init
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:***REMOVED***@postgres:5432/traffic_dw
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    command: >
+      bash -c "airflow db migrate && airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@traffic.local --password admin || true"
+    depends_on:
+      - postgres
+
+  airflow-webserver:
+    image: apache/airflow:2.8.1-python3.10
+    container_name: traffic_airflow_webserver
+    restart: always
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:***REMOVED***@postgres:5432/traffic_dw
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+      AIRFLOW__WEBSERVER__SECRET_KEY: '***REMOVED***'
+      AIRFLOW__CORE__FERNET_KEY: '***REMOVED***'
+      _PIP_ADDITIONAL_REQUIREMENTS: requests python-dotenv minio pandas pyarrow psycopg2-binary dbt-postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: traffic_dw
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ***REMOVED***
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      TOMTOM_API_KEY: ***REMOVED***
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../airflow/dags:/opt/airflow/dags
+      - ../airflow/logs:/opt/airflow/logs
+      - ../collector:/opt/airflow/collector
+      - ../config:/opt/airflow/config
+      - ../spark:/opt/airflow/spark
+      - ../dbt:/opt/airflow/dbt
+      - ../data:/opt/airflow/data
+    depends_on:
+      - postgres
+      - airflow-init
+    command: webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.8.1-python3.10
+    container_name: traffic_airflow_scheduler
+    restart: always
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:***REMOVED***@postgres:5432/traffic_dw
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+      AIRFLOW__WEBSERVER__SECRET_KEY: '***REMOVED***'
+      AIRFLOW__CORE__FERNET_KEY: '***REMOVED***'
+      _PIP_ADDITIONAL_REQUIREMENTS: requests python-dotenv minio pandas pyarrow psycopg2-binary dbt-postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: traffic_dw
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ***REMOVED***
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      TOMTOM_API_KEY: ***REMOVED***
+    volumes:
+      - ../airflow/dags:/opt/airflow/dags
+      - ../airflow/logs:/opt/airflow/logs
+      - ../collector:/opt/airflow/collector
+      - ../config:/opt/airflow/config
+      - ../spark:/opt/airflow/spark
+      - ../dbt:/opt/airflow/dbt
+      - ../data:/opt/airflow/data
+    depends_on:
+      - postgres
+      - airflow-init
+    command: scheduler
+
 volumes:
   postgres_data:
   minio_data:
