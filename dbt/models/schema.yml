@@ -30,3 +30,44 @@ models:
           - accepted_values:
               values: ['SMOOTH', 'SLIGHT_DELAY', 'SEVERE_CONGESTION']
 
+  - name: fact_traffic_incidents
+    description: "Bảng sự kiện từng sự cố giao thông toàn Hà Nội (accidents, traffic jams, road closures)"
+    columns:
+      - name: fact_id
+        tests:
+          - unique
+          - not_null
+      - name: incident_id
+        tests:
+          - not_null
+      - name: incident_type
+        tests:
+          - not_null
+      - name: fetched_at_utc
+        tests:
+          - not_null
+
+  - name: dim_incident_type
+    description: "Bảng chiều danh mục chuẩn hóa phân loại sự cố giao thông"
+    columns:
+      - name: incident_type
+        tests:
+          - unique
+          - not_null
+      - name: type_label
+        tests:
+          - not_null
+
+  - name: agg_hourly_incident_summary
+    description: "Bảng tổng hợp số lượng và độ trễ sự cố giao thông theo từng giờ và ngày"
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+      - name: hour_key
+        tests:
+          - not_null
+      - name: incident_type
+        tests:
+          - not_null
+
