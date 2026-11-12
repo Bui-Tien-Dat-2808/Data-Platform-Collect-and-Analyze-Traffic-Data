@@ -16,35 +16,48 @@ default_args = {
 with DAG(
     'traffic_data_platform_pipeline',
     default_args=default_args,
-    description='Automated pipeline for TomTom Traffic Data: Ingest -> Bronze -> Silver -> Gold',
+    description='Automated pipeline for Hanoi Traffic Incidents: Ingest -> Bronze -> Silver -> Gold',
     schedule_interval='*/15 * * * *',  # Every 15 minutes
     catchup=False,
-    tags=['traffic', 'lakehouse', 'elt'],
+    tags=['traffic', 'hanoi', 'incidents', 'lakehouse', 'elt'],
 ) as dag:
 
-    # 1. Ingestion: Call TomTom API and append to Bronze
-    task_ingest_bronze = BashOperator(
-        task_id='ingest_tomtom_to_bronze',
-        bash_command='python /opt/airflow/collector/tomtom_collector.py',
+    # 1. Ingestion: Thu thập toàn bộ sự cố/điểm tắc trên Bounding Box Hà Nội -> MinIO Bronze
+    task_ingest_incidents_bronze = BashOperator(
+        task_id='ingest_hanoi_incidents_to_bronze',
+        bash_command='python /opt/airflow/collector/hanoi_incident_collector.py',
     )
 
-    # 2. PySpark Clean & Transform Bronze -> Silver
-    task_spark_silver = BashOperator(
-        task_id='spark_clean_bronze_to_silver',
-        bash_command='python /opt/airflow/spark/jobs/bronze_to_silver.py',
+    # 2. Silver Transformation: Chuẩn hóa, lọc lỗi, tính delay_minutes, length_km -> MinIO Silver Parquet
+    task_spark_silver_incidents = BashOperator(
+        task_id='silver_clean_and_transform_incidents',
+        bash_command='python /opt/airflow/spark/jobs/bronze_to_silver_incidents.py',
     )
 
-    # 3. dbt Transform Silver -> Gold in PostgreSQL
+    # 3. Serving Staging: Nạp Parquet từ Silver vào PostgreSQL staging table
+    task_load_incidents_postgres = BashOperator(
+        task_id='load_incidents_silver_to_postgres',
+        bash_command='python /opt/airflow/spark/jobs/load_incidents_to_postgres.py',
+    )
+
+    # 4. Gold Transformation: dbt build Gold Data Marts (fact_traffic_incidents, agg_hourly_incident_summary)
     task_dbt_run = BashOperator(
-        task_id='dbt_run_gold_models',
-        bash_command='cd /opt/airflow/dbt && dbt run',
+        task_id='dbt_run_incident_gold_models',
+        bash_command='cd /opt/airflow/dbt && dbt run --select tag:incidents fact_traffic_incidents dim_incident_type agg_hourly_incident_summary',
     )
 
-    # 4. dbt Test Data Quality
+    # 5. Data Quality Assurance: dbt test tự động kiểm tra tính duy nhất, not null
     task_dbt_test = BashOperator(
-        task_id='dbt_test_quality_checks',
-        bash_command='cd /opt/airflow/dbt && dbt test',
+        task_id='dbt_test_incident_quality',
+        bash_command='cd /opt/airflow/dbt && dbt test --select fact_traffic_incidents dim_incident_type agg_hourly_incident_summary',
     )
 
-    task_ingest_bronze >> task_spark_silver >> task_dbt_run >> task_dbt_test
+    # Pipeline tuần tự cho toàn bộ sự cố Hà Nội:
+    (
+        task_ingest_incidents_bronze
+        >> task_spark_silver_incidents
+        >> task_load_incidents_postgres
+        >> task_dbt_run
+        >> task_dbt_test
+    )
 
