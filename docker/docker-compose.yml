@@ -142,6 +142,29 @@ services:
       - airflow-init
     command: scheduler
 
+  # ---------------------------------------------
+  # 5. WEB APPLICATION (FastAPI + Leaflet GIS Dashboard)
+  # ---------------------------------------------
+  web-app:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    container_name: traffic_web_app
+    restart: always
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: traffic_dw
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ***REMOVED***
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../web:/app/web
+      - ../config:/app/config
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
   minio_data:

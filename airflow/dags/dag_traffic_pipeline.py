@@ -16,10 +16,10 @@ default_args = {
 with DAG(
     'traffic_data_platform_pipeline',
     default_args=default_args,
-    description='Automated pipeline for Hanoi Traffic Incidents: Ingest -> Bronze -> Silver -> Gold',
-    schedule_interval='*/15 * * * *',  # Every 15 minutes
+    description='Automated pipeline for Multi-City Traffic Incidents: Ingest -> Bronze -> Silver -> Gold',
+    schedule_interval='*/5 * * * *',  # Every 5 minutes (Real-time Urban Traffic)
     catchup=False,
-    tags=['traffic', 'hanoi', 'incidents', 'lakehouse', 'elt'],
+    tags=['traffic', 'multi-city', 'realtime', 'lakehouse', 'elt'],
 ) as dag:
 
     # 1. Ingestion: Thu thập toàn bộ sự cố/điểm tắc trên 3 đô thị (Hà Nội, TP.HCM, Đà Nẵng) -> MinIO Bronze
