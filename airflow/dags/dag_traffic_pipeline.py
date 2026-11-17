@@ -22,10 +22,10 @@ with DAG(
     tags=['traffic', 'hanoi', 'incidents', 'lakehouse', 'elt'],
 ) as dag:
 
-    # 1. Ingestion: Thu thập toàn bộ sự cố/điểm tắc trên Bounding Box Hà Nội -> MinIO Bronze
+    # 1. Ingestion: Thu thập toàn bộ sự cố/điểm tắc trên 3 đô thị (Hà Nội, TP.HCM, Đà Nẵng) -> MinIO Bronze
     task_ingest_incidents_bronze = BashOperator(
-        task_id='ingest_hanoi_incidents_to_bronze',
-        bash_command='python /opt/airflow/collector/hanoi_incident_collector.py',
+        task_id='ingest_multi_city_incidents_to_bronze',
+        bash_command='python /opt/airflow/collector/multi_city_collector.py',
     )
 
     # 2. Silver Transformation: Chuẩn hóa, lọc lỗi, tính delay_minutes, length_km -> MinIO Silver Parquet

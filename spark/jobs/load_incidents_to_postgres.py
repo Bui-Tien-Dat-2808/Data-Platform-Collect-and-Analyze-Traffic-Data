@@ -98,33 +98,31 @@ def create_staging_table(cursor):
 
     create_table_sql = f"""
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-
+            city_id VARCHAR(20) DEFAULT 'HAN',
+            city_name VARCHAR(100) DEFAULT 'Hà Nội',
             incident_id VARCHAR(100) NOT NULL,
             incident_type INTEGER,
             type_label VARCHAR(100),
             magnitude INTEGER,
-
             delay_seconds INTEGER,
             delay_minutes DOUBLE PRECISION,
-
             length_m DOUBLE PRECISION,
             length_km DOUBLE PRECISION,
-
             road_from TEXT,
             road_to TEXT,
             description TEXT,
-
             longitude DOUBLE PRECISION,
             latitude DOUBLE PRECISION,
-
             fetched_at_utc TIMESTAMPTZ NOT NULL,
             fetched_at_vn TIMESTAMPTZ,
-
-            dt DATE,
-
-            CONSTRAINT uq_traffic_incident_snapshot
-            UNIQUE (incident_id, fetched_at_utc)
+            dt DATE
         );
+        ALTER TABLE {TABLE_NAME} ADD COLUMN IF NOT EXISTS city_id VARCHAR(20) DEFAULT 'HAN';
+        ALTER TABLE {TABLE_NAME} ADD COLUMN IF NOT EXISTS city_name VARCHAR(100) DEFAULT 'Hà Nội';
+        DROP INDEX IF EXISTS uq_traffic_incident_snapshot;
+        ALTER TABLE {TABLE_NAME} DROP CONSTRAINT IF EXISTS uq_traffic_incident_snapshot;
+        CREATE UNIQUE INDEX IF NOT EXISTS uq_traffic_incident_snapshot 
+        ON {TABLE_NAME} (city_id, incident_id, fetched_at_utc);
     """
 
     cursor.execute(create_table_sql)
@@ -138,7 +136,14 @@ def create_staging_table(cursor):
 
 def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
 
+    if "city_id" not in df.columns:
+        df["city_id"] = "HAN"
+    if "city_name" not in df.columns:
+        df["city_name"] = "Hà Nội"
+
     required_columns = [
+        "city_id",
+        "city_name",
         "incident_id",
         "incident_type",
         "type_label",
@@ -206,7 +211,7 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     before = len(df)
 
     df = df.dropna(
-        subset=["incident_id", "fetched_at_utc"]
+        subset=["city_id", "incident_id", "fetched_at_utc"]
     )
 
     logger.info(
@@ -223,7 +228,7 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     before = len(df)
 
     df = df.drop_duplicates(
-        subset=["incident_id", "fetched_at_utc"],
+        subset=["city_id", "incident_id", "fetched_at_utc"],
         keep="last"
     )
 
@@ -270,6 +275,8 @@ def load_to_postgres(df: pd.DataFrame):
         return
 
     columns = [
+        "city_id",
+        "city_name",
         "incident_id",
         "incident_type",
         "type_label",
@@ -306,7 +313,7 @@ def load_to_postgres(df: pd.DataFrame):
         )
         VALUES %s
 
-        ON CONFLICT (incident_id, fetched_at_utc)
+        ON CONFLICT (city_id, incident_id, fetched_at_utc)
         DO NOTHING
 
         RETURNING incident_id;

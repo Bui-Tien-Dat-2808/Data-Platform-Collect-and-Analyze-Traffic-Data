@@ -1,0 +1,38 @@
+[
+  {
+    "city_id": "HAN",
+    "city_name": "Hà Nội",
+    "center": [21.0285, 105.8542],
+    "zoom": 12,
+    "bbox": {
+      "min_lon": 105.70,
+      "min_lat": 20.90,
+      "max_lon": 105.95,
+      "max_lat": 21.10
+    }
+  },
+  {
+    "city_id": "SGN",
+    "city_name": "TP. Hồ Chí Minh",
+    "center": [10.7769, 106.7009],
+    "zoom": 12,
+    "bbox": {
+      "min_lon": 106.55,
+      "min_lat": 10.65,
+      "max_lon": 106.85,
+      "max_lat": 10.90
+    }
+  },
+  {
+    "city_id": "DAD",
+    "city_name": "Đà Nẵng",
+    "center": [16.0544, 108.2022],
+    "zoom": 13,
+    "bbox": {
+      "min_lon": 108.10,
+      "min_lat": 15.95,
+      "max_lon": 108.35,
+      "max_lat": 16.15
+    }
+  }
+]

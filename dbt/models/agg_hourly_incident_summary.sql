@@ -3,6 +3,8 @@
 ) }}
 
 SELECT
+    COALESCE(city_id, 'HAN') AS city_id,
+    COALESCE(city_name, 'Hà Nội') AS city_name,
     date_key,
     hour_key,
     EXTRACT(DOW FROM fetched_at_vn) AS day_of_week,
@@ -15,6 +17,8 @@ SELECT
     ROUND(SUM(length_km)::NUMERIC, 2) AS total_length_km
 FROM {{ ref('fact_traffic_incidents') }}
 GROUP BY 
+    COALESCE(city_id, 'HAN'),
+    COALESCE(city_name, 'Hà Nội'),
     date_key,
     hour_key,
     EXTRACT(DOW FROM fetched_at_vn),

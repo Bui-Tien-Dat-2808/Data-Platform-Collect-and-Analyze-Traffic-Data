@@ -31,12 +31,17 @@ models:
               values: ['SMOOTH', 'SLIGHT_DELAY', 'SEVERE_CONGESTION']
 
   - name: fact_traffic_incidents
-    description: "Bảng sự kiện từng sự cố giao thông toàn Hà Nội (accidents, traffic jams, road closures)"
+    description: "Bảng sự kiện từng sự cố giao thông toàn Hà Nội, TP.HCM và Đà Nẵng (accidents, traffic jams, road closures)"
     columns:
       - name: fact_id
         tests:
           - unique
           - not_null
+      - name: city_id
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['HAN', 'SGN', 'DAD']
       - name: incident_id
         tests:
           - not_null
@@ -44,6 +49,17 @@ models:
         tests:
           - not_null
       - name: fetched_at_utc
+        tests:
+          - not_null
+
+  - name: dim_city
+    description: "Bảng chiều danh mục chuẩn hóa các đô thị giám sát giao thông"
+    columns:
+      - name: city_id
+        tests:
+          - unique
+          - not_null
+      - name: city_name
         tests:
           - not_null
 

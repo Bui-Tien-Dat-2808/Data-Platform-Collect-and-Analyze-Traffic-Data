@@ -5,7 +5,9 @@
 
 WITH source_data AS (
     SELECT
-        MD5(CONCAT(incident_id, '_', fetched_at_utc::TEXT)) AS fact_id,
+        MD5(CONCAT(COALESCE(city_id, 'HAN'), '_', incident_id, '_', fetched_at_utc::TEXT)) AS fact_id,
+        COALESCE(city_id, 'HAN') AS city_id,
+        COALESCE(city_name, 'Hà Nội') AS city_name,
         incident_id,
         incident_type,
         type_label,

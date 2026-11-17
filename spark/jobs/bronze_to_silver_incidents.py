@@ -90,8 +90,10 @@ TYPE_MAP = {
 }
 
 
-# Thứ tự và tên 16 trường trong Silver
+# Thứ tự và tên các trường trong Silver
 SILVER_COLUMNS = [
+    "city_id",
+    "city_name",
     "incident_id",
     "incident_type",
     "type_label",
@@ -277,245 +279,104 @@ def get_coordinates(incident):
 # =====================================================
 
 def process_incidents(data):
+    if not isinstance(data, dict):
+        raise ValueError("Cấu trúc Bronze không hợp lệ.")
 
-    metadata = data.get("metadata") or {}
+    # Hỗ trợ cả file đơn thành phố hoặc file tổng hợp đa thành phố
+    if "metadata" in data and "incidents" in data:
+        city_payloads = [data]
+    else:
+        city_payloads = [v for v in data.values() if isinstance(v, dict) and "incidents" in v]
 
-    incidents = data.get("incidents") or []
+    all_records = []
 
-    if not isinstance(incidents, list):
-        raise ValueError(
-            "Trường incidents phải là một danh sách."
-        )
+    for payload in city_payloads:
+        metadata = payload.get("metadata") or {}
+        incidents = payload.get("incidents") or []
 
-    if not incidents:
-        logger.warning(
-            "Bronze không có incident nào để xử lý."
-        )
+        fetched_at = metadata.get("ingestion_timestamp_utc")
+        if not fetched_at:
+            continue
 
+        fetched_at_utc = pd.to_datetime(fetched_at, utc=True, errors="coerce")
+        if pd.isna(fetched_at_utc):
+            continue
+
+        fetched_at_vn = fetched_at_utc.tz_convert(TIMEZONE_VN)
+        dt_value = fetched_at_vn.strftime("%Y-%m-%d")
+
+        city_id = metadata.get("city_id") or "HAN"
+        city_name = metadata.get("city_name") or "Hà Nội"
+
+        for incident in incidents:
+            if not isinstance(incident, dict):
+                continue
+
+            incident_id = incident.get("incident_id")
+            if incident_id is None or str(incident_id).strip() == "":
+                continue
+            incident_id = str(incident_id).strip()
+
+            delay_seconds = to_integer(incident.get("delay_seconds"))
+            length_m = to_numeric(incident.get("length_m"))
+            incident_type = to_integer(incident.get("incident_type"))
+            magnitude = to_integer(incident.get("magnitude"))
+
+            if delay_seconds is not None and delay_seconds < 0:
+                continue
+
+            type_label = TYPE_MAP.get(incident_type, "Unknown") if incident_type is not None else "Unknown"
+            delay_minutes = delay_seconds / 60 if delay_seconds is not None else None
+            length_km = length_m / 1000 if length_m is not None else None
+
+            longitude, latitude = get_coordinates(incident)
+            longitude = to_numeric(longitude)
+            latitude = to_numeric(latitude)
+
+            all_records.append({
+                "city_id": incident.get("city_id") or city_id,
+                "city_name": incident.get("city_name") or city_name,
+                "incident_id": incident_id,
+                "incident_type": incident_type,
+                "type_label": type_label,
+                "magnitude": magnitude,
+                "delay_seconds": delay_seconds,
+                "delay_minutes": delay_minutes,
+                "length_m": length_m,
+                "length_km": length_km,
+                "road_from": incident.get("road_from"),
+                "road_to": incident.get("road_to"),
+                "description": incident.get("description"),
+                "longitude": longitude,
+                "latitude": latitude,
+                "fetched_at_utc": fetched_at_utc,
+                "fetched_at_vn": fetched_at_vn,
+                "dt": dt_value
+            })
+
+    if not all_records:
+        logger.warning("Không có incident hợp lệ sau khi xử lý.")
         return pd.DataFrame(columns=SILVER_COLUMNS)
 
-    fetched_at = metadata.get(
-        "ingestion_timestamp_utc"
-    )
+    df = pd.DataFrame(all_records)
+    df = df.drop_duplicates(subset=["city_id", "incident_id", "fetched_at_utc"], keep="last")
 
-    if not fetched_at:
-        raise ValueError(
-            "Thiếu ingestion_timestamp_utc trong metadata."
-        )
-
-    # Chuyển thời gian thu thập sang UTC.
-    fetched_at_utc = pd.to_datetime(
-        fetched_at,
-        utc=True,
-        errors="coerce"
-    )
-
-    if pd.isna(fetched_at_utc):
-        raise ValueError(
-            "ingestion_timestamp_utc không hợp lệ."
-        )
-
-    # Chuyển UTC sang giờ Việt Nam.
-    fetched_at_vn = fetched_at_utc.tz_convert(
-        TIMEZONE_VN
-    )
-
-    # Ngày partition lấy theo giờ Việt Nam.
-    dt_value = fetched_at_vn.strftime("%Y-%m-%d")
-
-    records = []
-
-    for incident in incidents:
-
-        if not isinstance(incident, dict):
-            continue
-
-        # -------------------------------------------------
-        # 1. Validate incident_id
-        # -------------------------------------------------
-
-        incident_id = incident.get("incident_id")
-
-        if (
-            incident_id is None
-            or str(incident_id).strip() == ""
-        ):
-            continue
-
-        incident_id = str(incident_id).strip()
-
-        # -------------------------------------------------
-        # 2. Convert numeric fields
-        # -------------------------------------------------
-
-        delay_seconds = to_integer(
-            incident.get("delay_seconds")
-        )
-
-        length_m = to_numeric(
-            incident.get("length_m")
-        )
-
-        incident_type = to_integer(
-            incident.get("incident_type")
-        )
-
-        magnitude = to_integer(
-            incident.get("magnitude")
-        )
-
-        # -------------------------------------------------
-        # 3. Filter invalid delay
-        # -------------------------------------------------
-
-        if (
-            delay_seconds is not None
-            and delay_seconds < 0
-        ):
-            continue
-
-        # -------------------------------------------------
-        # 4. Map incident type
-        # -------------------------------------------------
-
-        if incident_type is not None:
-            type_label = TYPE_MAP.get(
-                incident_type,
-                "Unknown"
-            )
-        else:
-            type_label = "Unknown"
-
-        # -------------------------------------------------
-        # 5. Calculate delay_minutes and length_km
-        # -------------------------------------------------
-
-        delay_minutes = (
-            delay_seconds / 60
-            if delay_seconds is not None
-            else None
-        )
-
-        length_km = (
-            length_m / 1000
-            if length_m is not None
-            else None
-        )
-
-        # -------------------------------------------------
-        # 6. Extract coordinates
-        # -------------------------------------------------
-
-        longitude, latitude = get_coordinates(
-            incident
-        )
-
-        longitude = to_numeric(longitude)
-        latitude = to_numeric(latitude)
-
-        # -------------------------------------------------
-        # 7. Build Silver record
-        # -------------------------------------------------
-
-        records.append({
-
-            "incident_id": incident_id,
-
-            "incident_type": incident_type,
-
-            "type_label": type_label,
-
-            "magnitude": magnitude,
-
-            "delay_seconds": delay_seconds,
-
-            "delay_minutes": delay_minutes,
-
-            "length_m": length_m,
-
-            "length_km": length_km,
-
-            "road_from": incident.get("road_from"),
-
-            "road_to": incident.get("road_to"),
-
-            "description": incident.get("description"),
-
-            "longitude": longitude,
-
-            "latitude": latitude,
-
-            "fetched_at_utc": fetched_at_utc,
-
-            "fetched_at_vn": fetched_at_vn,
-
-            "dt": dt_value
-        })
-
-    if not records:
-
-        logger.warning(
-            "Không có incident hợp lệ sau khi xử lý."
-        )
-
-        return pd.DataFrame(columns=SILVER_COLUMNS)
-
-    df = pd.DataFrame(records)
-
-    # =================================================
-    # 8. DEDUPLICATION
-    # =================================================
-
-    before_dedup = len(df)
-
-    df = df.drop_duplicates(
-        subset=[
-            "incident_id",
-            "fetched_at_utc"
-        ],
-        keep="last"
-    )
-
-    after_dedup = len(df)
-
-    logger.info(
-        "Số bản ghi trùng lặp đã loại bỏ: %s",
-        before_dedup - after_dedup
-    )
-
-    # =================================================
-    # 9. DATA TYPE STANDARDIZATION
-    # =================================================
-
-    integer_columns = [
+    numeric_columns = [
         "incident_type",
         "magnitude",
-        "delay_seconds"
-    ]
-
-    for column in integer_columns:
-
-        df[column] = pd.to_numeric(
-            df[column],
-            errors="coerce"
-        ).astype("Int64")
-
-    double_columns = [
+        "delay_seconds",
         "delay_minutes",
         "length_m",
         "length_km",
         "longitude",
         "latitude"
     ]
-
-    for column in double_columns:
-
-        df[column] = pd.to_numeric(
-            df[column],
-            errors="coerce"
-        ).astype("float64")
+    for column in numeric_columns:
+        df[column] = pd.to_numeric(df[column], errors="coerce")
 
     string_columns = [
+        "city_id",
+        "city_name",
         "incident_id",
         "type_label",
         "road_from",
@@ -523,27 +384,11 @@ def process_incidents(data):
         "description",
         "dt"
     ]
-
     for column in string_columns:
-
         df[column] = df[column].astype("string")
 
-    # Đảm bảo đúng thứ tự 16 trường.
-    df = df[SILVER_COLUMNS]
-
-    logger.info(
-        "Số incident hợp lệ sau xử lý: %s",
-        len(df)
-    )
-
-    logger.info(
-        "Silver columns: %s",
-        list(df.columns)
-    )
-
-    return df
-
-
+    logger.info(f"Số incident hợp lệ sau xử lý: {len(df)}")
+    return df[SILVER_COLUMNS]
 # =====================================================
 # 8. SAVE SILVER PARQUET
 # =====================================================
