@@ -1,7 +1,13 @@
+
 from datetime import datetime, timedelta
+
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
+
+
+# ==========================================
+# 1. DEFAULT ARGUMENTS
+# ==========================================
 
 default_args = {
     'owner': 'data_platform_team',
@@ -13,38 +19,103 @@ default_args = {
     'retry_delay': timedelta(minutes=2),
 }
 
+
+# ==========================================
+# 2. DEFINE DAG
+# ==========================================
+
 with DAG(
-    'traffic_data_platform_pipeline',
+    dag_id='traffic_data_platform_pipeline',
     default_args=default_args,
-    description='Automated pipeline for TomTom Traffic Data: Ingest -> Bronze -> Silver -> Gold',
-    schedule_interval='*/15 * * * *',  # Every 15 minutes
+    description='Multi-City Traffic Data Pipeline: Flow and Incidents to Bronze, Silver and Gold',
+    schedule_interval='*/15 * * * *',
     catchup=False,
-    tags=['traffic', 'lakehouse', 'elt'],
+    tags=['traffic', 'multi-city', 'lakehouse', 'elt', 'incident'],
 ) as dag:
 
-    # 1. Ingestion: Call TomTom API and append to Bronze
-    task_ingest_bronze = BashOperator(
-        task_id='ingest_tomtom_to_bronze',
+    # ==========================================
+    # 3. BRONZE - DATA INGESTION
+    # ==========================================
+
+    # Traffic Flow Collector
+    task_ingest_flow = BashOperator(
+        task_id='ingest_tomtom_flow_to_bronze',
         bash_command='python /opt/airflow/collector/tomtom_collector.py',
     )
 
-    # 2. PySpark Clean & Transform Bronze -> Silver
-    task_spark_silver = BashOperator(
-        task_id='spark_clean_bronze_to_silver',
+    # Multi-City Incident Collector
+    task_ingest_incidents = BashOperator(
+        task_id='ingest_multi_city_incidents_to_bronze',
+        bash_command='python /opt/airflow/collector/multi_city_collector.py',
+    )
+
+
+    # ==========================================
+    # 4. SILVER - SPARK PROCESSING
+    # ==========================================
+
+    # Traffic Flow Processing
+    task_spark_flow = BashOperator(
+        task_id='spark_clean_flow_bronze_to_silver',
         bash_command='python /opt/airflow/spark/jobs/bronze_to_silver.py',
     )
 
-    # 3. dbt Transform Silver -> Gold in PostgreSQL
+    # Multi-City Incident Processing
+    task_spark_incidents = BashOperator(
+        task_id='spark_clean_incidents_bronze_to_silver',
+        bash_command='python /opt/airflow/spark/jobs/bronze_to_silver_incidents.py',
+    )
+
+
+    # ==========================================
+    # 5. LOAD INCIDENTS TO POSTGRESQL
+    # ==========================================
+
+    task_load_incidents = BashOperator(
+        task_id='load_incidents_to_postgres',
+        bash_command='python /opt/airflow/spark/jobs/load_incidents_to_postgres.py',
+    )
+
+
+    # ==========================================
+    # 6. GOLD - DBT TRANSFORMATION
+    # ==========================================
+
     task_dbt_run = BashOperator(
         task_id='dbt_run_gold_models',
         bash_command='cd /opt/airflow/dbt && dbt run',
     )
 
-    # 4. dbt Test Data Quality
+
+    # ==========================================
+    # 7. DATA QUALITY - DBT TEST
+    # ==========================================
+
     task_dbt_test = BashOperator(
         task_id='dbt_test_quality_checks',
         bash_command='cd /opt/airflow/dbt && dbt test',
     )
 
-    task_ingest_bronze >> task_spark_silver >> task_dbt_run >> task_dbt_test
 
+    # ==========================================
+    # 8. TASK DEPENDENCIES
+    # ==========================================
+
+    # Branch 1: Traffic Flow
+    task_ingest_flow >> task_spark_flow
+
+    # Branch 2: Multi-City Incidents
+    (
+        task_ingest_incidents
+        >> task_spark_incidents
+        >> task_load_incidents
+    )
+
+    # dbt waits for both branches
+    [
+        task_spark_flow,
+        task_load_incidents
+    ] >> task_dbt_run
+
+    # Data quality checks after dbt
+    task_dbt_run >> task_dbt_test

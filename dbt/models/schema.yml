@@ -1,6 +1,9 @@
 version: 2
 
 models:
+  # ==========================================
+  # TRAFFIC FLOW FACT
+  # ==========================================
   - name: fact_traffic_flow_15min
     description: "Bảng sự kiện lưu trạng thái lưu thông 15 phút tại từng điểm giám sát"
     columns:
@@ -17,8 +20,11 @@ models:
       - name: congestion_level
         tests:
           - accepted_values:
-              values: ['LOW / FREE_FLOW', 'MODERATE', 'HEAVY / CONGESTED']
+              values: ["LOW / FREE_FLOW", "MODERATE", "HEAVY / CONGESTED"]
 
+  # ==========================================
+  # HOURLY TRAFFIC SUMMARY
+  # ==========================================
   - name: fact_hourly_traffic_summary
     description: "Bảng tổng hợp vận tốc và độ trễ theo từng giờ"
     columns:
@@ -28,5 +34,97 @@ models:
       - name: hourly_congestion_status
         tests:
           - accepted_values:
-              values: ['SMOOTH', 'SLIGHT_DELAY', 'SEVERE_CONGESTION']
+              values: ["SMOOTH", "SLIGHT_DELAY", "SEVERE_CONGESTION"]
 
+  # ==========================================
+  # INCIDENT FACT
+  # ==========================================
+  - name: fact_traffic_incidents
+    description: "Bảng fact lưu lịch sử các sự cố giao thông tại Hà Nội, TP.HCM và Đà Nẵng"
+    columns:
+      - name: fact_id
+        description: "Khóa chính của bản ghi sự cố"
+        tests:
+          - unique
+          - not_null
+
+      - name: city_id
+        description: "Mã thành phố"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["HAN", "SGN", "DAD"]
+
+      - name: incident_id
+        description: "ID sự cố từ TomTom API"
+        tests:
+          - not_null
+
+      - name: incident_type
+        description: "Mã loại sự cố"
+        tests:
+          - not_null
+
+      - name: fetched_at_utc
+        description: "Thời điểm thu thập dữ liệu theo UTC"
+        tests:
+          - not_null
+
+  # ==========================================
+  # CITY DIMENSION
+  # ==========================================
+  - name: dim_city
+    description: "Bảng chiều danh mục chuẩn hóa các đô thị giám sát giao thông"
+    columns:
+      - name: city_id
+        tests:
+          - unique
+          - not_null
+
+      - name: city_name
+        tests:
+          - not_null
+
+  # ==========================================
+  # INCIDENT TYPE DIMENSION
+  # ==========================================
+  - name: dim_incident_type
+    description: "Bảng chiều danh mục chuẩn hóa phân loại sự cố giao thông"
+    columns:
+      - name: incident_type
+        description: "Mã loại sự cố"
+        tests:
+          - unique
+          - not_null
+
+      - name: type_label
+        description: "Tên loại sự cố"
+        tests:
+          - not_null
+
+  # ==========================================
+  # HOURLY INCIDENT SUMMARY
+  # ==========================================
+  - name: agg_hourly_incident_summary
+    description: "Bảng tổng hợp số lượng và độ trễ sự cố giao thông theo từng giờ, ngày và thành phố"
+    columns:
+      - name: city_id
+        tests:
+          - not_null
+
+      - name: date_key
+        tests:
+          - not_null
+
+      - name: hour_key
+        tests:
+          - not_null
+
+      - name: incident_type
+        tests:
+          - not_null
+
+      - name: day_of_week
+        description: "Thứ trong tuần: 0 là Chủ nhật, 6 là Thứ bảy"
+        tests:
+          - not_null

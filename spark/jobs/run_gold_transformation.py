@@ -17,7 +17,7 @@ DB_HOST = os.getenv("POSTGRES_HOST", "127.0.0.1")
 DB_PORT = os.getenv("POSTGRES_PORT", "5433")
 DB_NAME = os.getenv("POSTGRES_DB", "traffic_dw")
 DB_USER = os.getenv("POSTGRES_USER", "postgres")
-DB_PASS = os.getenv("POSTGRES_PASSWORD", "***REMOVED***")
+DB_PASS = os.getenv("POSTGRES_PASSWORD", "postgres_traffic_2026")
 
 def run_gold_transformation():
     print(f"Connecting to PostgreSQL on {DB_HOST}:{DB_PORT}/{DB_NAME}...")
