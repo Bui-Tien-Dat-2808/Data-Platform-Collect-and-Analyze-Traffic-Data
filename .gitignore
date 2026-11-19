@@ -24,6 +24,7 @@ __pycache__/
 data/
 data/*
 collector/sample_batch.json
+collector/sample_incidents*.json
 *.parquet
 *.snappy
 *.csv
