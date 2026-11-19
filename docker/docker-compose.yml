@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: traffic_dw
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -65,7 +65,7 @@ services:
     image: apache/airflow:2.8.1-python3.10
     container_name: traffic_airflow_init
     environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:***REMOVED***@postgres:5432/traffic_dw
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD}@postgres:5432/traffic_dw
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     command: >
       bash -c "airflow db migrate && airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@traffic.local --password admin || true"
@@ -78,21 +78,21 @@ services:
     restart: always
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:***REMOVED***@postgres:5432/traffic_dw
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD}@postgres:5432/traffic_dw
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
-      AIRFLOW__WEBSERVER__SECRET_KEY: '***REMOVED***'
-      AIRFLOW__CORE__FERNET_KEY: '***REMOVED***'
+      AIRFLOW__WEBSERVER__SECRET_KEY: '${AIRFLOW_FERNET_KEY}'
+      AIRFLOW__CORE__FERNET_KEY: '${AIRFLOW_FERNET_KEY}'
       _PIP_ADDITIONAL_REQUIREMENTS: requests python-dotenv minio pandas pyarrow psycopg2-binary dbt-postgres
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: traffic_dw
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       MINIO_ENDPOINT: minio:9000
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
-      TOMTOM_API_KEY: ***REMOVED***
+      TOMTOM_API_KEY: ${TOMTOM_API_KEY}
     ports:
       - "8080:8080"
     volumes:
@@ -114,21 +114,21 @@ services:
     restart: always
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:***REMOVED***@postgres:5432/traffic_dw
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD}@postgres:5432/traffic_dw
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
-      AIRFLOW__WEBSERVER__SECRET_KEY: '***REMOVED***'
-      AIRFLOW__CORE__FERNET_KEY: '***REMOVED***'
+      AIRFLOW__WEBSERVER__SECRET_KEY: '${AIRFLOW_FERNET_KEY}'
+      AIRFLOW__CORE__FERNET_KEY: '${AIRFLOW_FERNET_KEY}'
       _PIP_ADDITIONAL_REQUIREMENTS: requests python-dotenv minio pandas pyarrow psycopg2-binary dbt-postgres
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: traffic_dw
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       MINIO_ENDPOINT: minio:9000
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
-      TOMTOM_API_KEY: ***REMOVED***
+      TOMTOM_API_KEY: ${TOMTOM_API_KEY}
     volumes:
       - ../airflow/dags:/opt/airflow/dags
       - ../airflow/logs:/opt/airflow/logs
@@ -156,7 +156,7 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: traffic_dw
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "8000:8000"
     volumes:

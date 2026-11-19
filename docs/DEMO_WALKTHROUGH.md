@@ -11,7 +11,7 @@ docker compose up -d
 ```
 Kiểm tra trạng thái các dịch vụ:
 - **MinIO Console**: Mở trình duyệt vào [http://localhost:9001](http://localhost:9001) (User: `minioadmin` / Pass: `minioadmin`)
-- **PostgreSQL**: Cổng `5433` (DB: `traffic_dw`, User: `postgres`, Pass: `***REMOVED***`)
+- **PostgreSQL**: Cổng `5433` (DB: `traffic_dw`, User: `postgres`, Pass: `your_postgres_password`)
 - **Kafka**: Cổng `9092`
 
 ---
@@ -68,7 +68,7 @@ Kết nối DBeaver hoặc Power BI tới:
 - **Port**: `5433`
 - **Database**: `traffic_dw`
 - **Username**: `postgres`
-- **Password**: `***REMOVED***`
+- **Password**: `your_postgres_password`
 
 Chạy câu truy vấn kiểm tra kết quả ngay trong PostgreSQL:
 ```sql
