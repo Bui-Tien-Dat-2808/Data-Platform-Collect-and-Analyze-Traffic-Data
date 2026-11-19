@@ -113,12 +113,16 @@ def create_staging_table(cursor):
             description TEXT,
             longitude DOUBLE PRECISION,
             latitude DOUBLE PRECISION,
+            geometry_type VARCHAR(50),
+            geometry_coordinates TEXT,
             fetched_at_utc TIMESTAMPTZ NOT NULL,
             fetched_at_vn TIMESTAMPTZ,
             dt DATE
         );
         ALTER TABLE {TABLE_NAME} ADD COLUMN IF NOT EXISTS city_id VARCHAR(20) DEFAULT 'HAN';
         ALTER TABLE {TABLE_NAME} ADD COLUMN IF NOT EXISTS city_name VARCHAR(100) DEFAULT 'Hà Nội';
+        ALTER TABLE {TABLE_NAME} ADD COLUMN IF NOT EXISTS geometry_type VARCHAR(50);
+        ALTER TABLE {TABLE_NAME} ADD COLUMN IF NOT EXISTS geometry_coordinates TEXT;
         DROP INDEX IF EXISTS uq_traffic_incident_snapshot;
         ALTER TABLE {TABLE_NAME} DROP CONSTRAINT IF EXISTS uq_traffic_incident_snapshot;
         CREATE UNIQUE INDEX IF NOT EXISTS uq_traffic_incident_snapshot 
@@ -157,6 +161,8 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
         "description",
         "longitude",
         "latitude",
+        "geometry_type",
+        "geometry_coordinates",
         "fetched_at_utc",
         "fetched_at_vn",
         "dt"
@@ -290,6 +296,8 @@ def load_to_postgres(df: pd.DataFrame):
         "description",
         "longitude",
         "latitude",
+        "geometry_type",
+        "geometry_coordinates",
         "fetched_at_utc",
         "fetched_at_vn",
         "dt"

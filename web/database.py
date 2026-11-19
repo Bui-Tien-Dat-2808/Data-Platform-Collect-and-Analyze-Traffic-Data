@@ -92,6 +92,8 @@ def get_live_city_incidents(city_id: str) -> List[Dict[str, Any]]:
                     f.description,
                     f.latitude,
                     f.longitude,
+                    f.geometry_type,
+                    f.geometry_coordinates,
                     f.fetched_at_vn,
                     -- Color code & congestion level similar to Google Maps
                     CASE 
@@ -148,7 +150,7 @@ def get_live_city_kpi(city_id: str) -> Dict[str, Any]:
                         LIMIT 1
                     ) AS top_congested_corridor,
                     (
-                        SELECT TO_CHAR(MAX(fetched_at_vn), 'HH24:MI:SS DD/MM/YYYY')
+                        SELECT TO_CHAR(MAX(fetched_at_vn) AT TIME ZONE 'Asia/Ho_Chi_Minh', 'HH24:MI:SS DD/MM/YYYY')
                         FROM city_data
                     ) AS last_updated_time
                 FROM city_data;

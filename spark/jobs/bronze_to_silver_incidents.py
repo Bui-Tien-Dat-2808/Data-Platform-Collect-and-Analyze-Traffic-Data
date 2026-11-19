@@ -107,6 +107,8 @@ SILVER_COLUMNS = [
     "description",
     "longitude",
     "latitude",
+    "geometry_type",
+    "geometry_coordinates",
     "fetched_at_utc",
     "fetched_at_vn",
     "dt"
@@ -333,6 +335,8 @@ def process_incidents(data):
             longitude = to_numeric(longitude)
             latitude = to_numeric(latitude)
 
+            geometry_coordinates = incident.get("geometry_coordinates")
+
             all_records.append({
                 "city_id": incident.get("city_id") or city_id,
                 "city_name": incident.get("city_name") or city_name,
@@ -349,6 +353,8 @@ def process_incidents(data):
                 "description": incident.get("description"),
                 "longitude": longitude,
                 "latitude": latitude,
+                "geometry_type": incident.get("geometry_type"),
+                "geometry_coordinates": json.dumps(geometry_coordinates) if geometry_coordinates is not None else None,
                 "fetched_at_utc": fetched_at_utc,
                 "fetched_at_vn": fetched_at_vn,
                 "dt": dt_value
@@ -382,6 +388,8 @@ def process_incidents(data):
         "road_from",
         "road_to",
         "description",
+        "geometry_type",
+        "geometry_coordinates",
         "dt"
     ]
     for column in string_columns:

@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Urban Traffic Intelligence — Realtime Map</title>
+  <title>Urban Traffic Intelligence — Giám sát Thời gian thực</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            brand: '#3B82F6',
+            brand: '#2563EB',
             severe: '#EA2027',
             moderate: '#FFC312',
             light: '#10AC84',
-            darkbg: '#0F172A',
-            panelbg: '#1E293B'
+            pagebg: '#F1F5F9',
+            panelbg: '#FFFFFF'
           }
         }
       }
@@ -29,153 +28,228 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Leaflet Heatmap Plugin -->
-  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    #map { height: calc(100vh - 140px); width: 100%; border-radius: 0.75rem; }
-    .leaflet-popup-content-wrapper { background: #1E293B; color: #F8FAFC; border-radius: 0.5rem; }
-    .leaflet-popup-tip { background: #1E293B; }
+    #map { height: calc(100vh - 210px); width: 100%; border-radius: 0.75rem; }
+    .leaflet-popup-content-wrapper { background: #FFFFFF; color: #1E293B; border-radius: 0.75rem; box-shadow: 0 10px 30px rgba(15, 23, 42, .18); }
+    .leaflet-popup-tip { background: #FFFFFF; }
+    .leaflet-popup-content { margin: 14px 16px; }
+    .traffic-gradient { background: linear-gradient(to right, #10AC84, #FFC312, #F97316, #880000); }
   </style>
 </head>
-<body class="bg-darkbg text-slate-100 font-sans antialiased overflow-hidden">
+<body class="bg-pagebg text-slate-800 font-sans antialiased overflow-hidden">
 
   <!-- Header -->
-  <header class="h-16 bg-panelbg border-b border-slate-700 px-6 flex items-center justify-between">
+  <header class="h-16 bg-panelbg border-b border-slate-200 px-6 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <span class="text-2xl">🚦</span>
+      <span class="w-10 h-10 rounded-xl bg-brand flex items-center justify-center text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
+      </span>
       <div>
-        <h1 class="text-lg font-bold text-white tracking-wide">URBAN TRAFFIC INTELLIGENCE</h1>
-        <p class="text-xs text-slate-400">Hệ thống Giám sát Giao thông Đô thị Đa Thành phố Thời gian thực</p>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-lg font-extrabold text-slate-900 tracking-wide">URBAN TRAFFIC INTELLIGENCE</h1>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full tracking-wider">LIVE PLATFORM</span>
+        </div>
+        <p class="text-xs text-slate-500">Hệ thống Giám sát &amp; Phân tích Giao thông Đô thị Đa Thành phố Thời gian thực</p>
       </div>
     </div>
 
     <!-- City Selector & Controls -->
-    <div class="flex items-center space-x-4">
-      <div class="flex items-center space-x-2">
-        <label for="citySelect" class="text-xs font-semibold text-slate-300">ĐÔ THỊ:</label>
-        <select id="citySelect" class="bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer">
-          <option value="HAN">Hà Nội</option>
-          <option value="SGN">TP. Hồ Chí Minh</option>
-          <option value="DAD">Đà Nẵng</option>
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <label for="citySelect" class="text-xs font-semibold text-slate-500">ĐÔ THỊ:</label>
+        <select id="citySelect" class="bg-transparent text-sm font-semibold text-slate-800 outline-none cursor-pointer">
+          <option value="HAN">Hà Nội (HAN)</option>
+          <option value="SGN">TP. Hồ Chí Minh (SGN)</option>
+          <option value="DAD">Đà Nẵng (DAD)</option>
         </select>
       </div>
 
       <!-- Auto Refresh Indicator -->
-      <div class="flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700 text-xs">
+      <div class="flex items-center space-x-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs">
         <span class="relative flex h-2.5 w-2.5">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
         </span>
-        <span id="refreshTimer" class="text-slate-300">Tự làm mới: 60s</span>
+        <span id="refreshTimer" class="text-emerald-700 font-medium">Tự làm mới: 60s</span>
       </div>
 
       <!-- Refresh Now Button -->
-      <button id="btnRefresh" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition">
-        🔄 Cập nhật ngay
+      <button id="btnRefresh" class="bg-brand hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition flex items-center space-x-1.5 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Làm mới</span>
       </button>
     </div>
   </header>
 
   <!-- Main Content Layout -->
-  <main class="p-4 grid grid-cols-12 gap-4 h-[calc(100vh-64px)]">
+  <main class="p-4 grid grid-cols-12 grid-rows-[minmax(0,1fr)] gap-4 h-[calc(100vh_-_64px)]">
 
-    <!-- Left Map View (8 Cols) -->
-    <section class="col-span-12 lg:col-span-9 flex flex-col space-y-3">
+    <!-- Left Map View (9 Cols) -->
+    <section class="col-span-12 lg:col-span-9 flex flex-col space-y-3 min-h-0">
 
-      <!-- KPI Bar -->
-      <div class="grid grid-cols-4 gap-3">
-        <div class="bg-panelbg border border-slate-700 p-3 rounded-lg flex items-center justify-between">
+      <!-- KPI Bar (5 cards) -->
+      <div class="grid grid-cols-5 gap-3">
+        <div class="bg-panelbg border border-slate-200 p-3 rounded-xl flex items-center justify-between shadow-sm">
           <div>
-            <div class="text-xs text-slate-400">Tổng điểm ùn tắc</div>
-            <div id="kpiIncidents" class="text-xl font-bold text-white">--</div>
+            <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tổng điểm ùn tắc</div>
+            <div class="flex items-baseline space-x-1">
+              <span id="kpiIncidents" class="text-2xl font-bold text-slate-900">--</span>
+              <span class="text-xs text-slate-500">điểm</span>
+            </div>
           </div>
-          <span class="text-2xl">📍</span>
+          <span class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </span>
         </div>
 
-        <div class="bg-panelbg border border-slate-700 p-3 rounded-lg flex items-center justify-between">
+        <div class="bg-panelbg border border-slate-200 p-3 rounded-xl flex items-center justify-between shadow-sm">
           <div>
-            <div class="text-xs text-slate-400">Chiều dài kẹt xe</div>
-            <div id="kpiLength" class="text-xl font-bold text-amber-400">-- km</div>
+            <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Chiều dài kẹt xe</div>
+            <div class="flex items-baseline space-x-1">
+              <span id="kpiLength" class="text-2xl font-bold text-amber-500">--</span>
+              <span class="text-xs text-slate-500">km</span>
+            </div>
           </div>
-          <span class="text-2xl">🚗</span>
+          <span class="w-9 h-9 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </span>
         </div>
 
-        <div class="bg-panelbg border border-slate-700 p-3 rounded-lg flex items-center justify-between">
+        <div class="bg-panelbg border border-slate-200 p-3 rounded-xl flex items-center justify-between shadow-sm">
           <div>
-            <div class="text-xs text-slate-400">Độ trễ trung bình</div>
-            <div id="kpiDelay" class="text-xl font-bold text-rose-400">-- phút</div>
+            <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Độ trễ trung bình</div>
+            <div class="flex items-baseline space-x-1">
+              <span id="kpiDelay" class="text-2xl font-bold text-rose-600">--</span>
+              <span class="text-xs text-slate-500">phút</span>
+            </div>
           </div>
-          <span class="text-2xl">⏱️</span>
+          <span class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
         </div>
 
-        <div class="bg-panelbg border border-slate-700 p-3 rounded-lg flex items-center justify-between">
+        <div class="bg-panelbg border border-slate-200 p-3 rounded-xl flex items-center justify-between shadow-sm">
           <div>
-            <div class="text-xs text-slate-400">Cập nhật lúc</div>
-            <div id="kpiTime" class="text-sm font-semibold text-emerald-400">--</div>
+            <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Thời gian đồng bộ</div>
+            <div id="kpiTime" class="text-sm font-bold text-slate-800 font-mono mt-1">--</div>
           </div>
-          <span class="text-2xl">📡</span>
+          <span class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+            </svg>
+          </span>
+        </div>
+
+        <div class="bg-rose-50 border border-rose-200 p-3 rounded-xl shadow-sm">
+          <div class="flex items-center space-x-1 text-[11px] font-semibold text-rose-600 uppercase tracking-wider">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Điểm nghẽn nóng nhất</span>
+          </div>
+          <div id="kpiHotspot" class="text-sm font-bold text-rose-600 leading-snug mt-1">Đang tải...</div>
         </div>
       </div>
 
       <!-- Map Container with Toggle Controls -->
-      <div class="relative flex-1 bg-panelbg border border-slate-700 rounded-xl overflow-hidden p-1 shadow-lg">
+      <div class="relative flex-1 bg-panelbg border border-slate-200 rounded-xl overflow-hidden p-1 shadow-sm">
         <div id="map"></div>
 
+        <!-- Exit focused-segment view -->
+        <div class="absolute top-4 right-4 z-[1000]">
+          <button id="btnShowAll" class="hidden bg-white/95 border border-slate-200 hover:border-blue-400 text-xs font-semibold text-slate-700 px-3 py-1.5 rounded-lg shadow-md transition">
+            &larr; Hiện tất cả điểm tắc
+          </button>
+        </div>
+
         <!-- Legend (Google Maps Style) -->
-        <div class="absolute bottom-6 right-6 z-[1000] bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded-lg text-xs space-y-1.5 shadow-xl">
-          <div class="font-bold text-slate-200 border-b border-slate-700 pb-1">MỨC ĐỘ ÙN TẮC</div>
-          <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-severe"></span>
-            <span>Tắc nghiêm trọng (&ge; 5 phút trễ)</span>
+        <div class="absolute bottom-6 right-6 z-[1000] bg-white/95 backdrop-blur-sm border border-slate-200 p-3 rounded-xl text-xs space-y-1.5 shadow-xl w-64">
+          <div class="flex items-center space-x-2 font-bold text-slate-800 border-b border-slate-200 pb-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>GIAO THÔNG GOOGLE MAPS</span>
+          </div>
+          <div class="flex items-center space-x-2 pt-0.5">
+            <span class="text-[10px] font-semibold text-slate-500">NHANH</span>
+            <span class="traffic-gradient flex-1 h-1.5 rounded-full"></span>
+            <span class="text-[10px] font-semibold text-slate-500">CHẬM / TẮC</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-moderate"></span>
-            <span>Ùn ứ chậm (2 - 5 phút trễ)</span>
+            <span class="w-4 h-1 rounded-full bg-[#880000]"></span>
+            <span class="text-slate-600">Tắc đứng yên (&ge; 15p trễ)</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-light"></span>
-            <span>Thông thoáng / Chậm nhẹ</span>
+            <span class="w-4 h-1 rounded-full bg-severe"></span>
+            <span class="text-slate-600">Tắc đường (&ge; 5 - 15p trễ)</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-[#E056FD]"></span>
-            <span>Tai nạn giao thông</span>
+            <span class="w-4 h-1 rounded-full bg-[#F97316]"></span>
+            <span class="text-slate-600">Ùn ứ chậm (2 – 5p trễ)</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-4 h-1 rounded-full bg-light"></span>
+            <span class="text-slate-600">Thông thoáng (&lt; 2p trễ)</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-[#E056FD] flex items-center justify-center text-white text-[8px] font-bold">&minus;</span>
+            <span class="text-slate-600">Đóng đường / Thi công</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-amber-500 text-[10px]">&#9888;</span>
+            <span class="text-slate-600">Tai nạn giao thông</span>
           </div>
         </div>
 
-        <!-- Heatmap / Markers Toggle -->
-        <div class="absolute top-4 right-4 z-[1000] flex space-x-2">
-          <button id="toggleHeatmap" class="bg-slate-900/90 border border-slate-600 hover:border-blue-500 text-xs text-slate-200 px-3 py-1.5 rounded-lg shadow-md transition">
-            🔥 Bản đồ nhiệt: <span id="heatStatus" class="text-emerald-400 font-bold">BẬT</span>
-          </button>
-        </div>
       </div>
     </section>
 
     <!-- Right Sidebar Panel (3 Cols) -->
-    <aside class="col-span-12 lg:col-span-3 flex flex-col space-y-3">
-
-      <!-- Hotspot Corridor -->
-      <div class="bg-panelbg border border-slate-700 p-4 rounded-xl shadow-lg">
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Điểm nghẽn nóng nhất</div>
-        <div id="kpiHotspot" class="text-sm font-bold text-rose-300 leading-snug">Đang tải...</div>
-      </div>
+    <aside class="col-span-12 lg:col-span-3 flex flex-col space-y-3 min-h-0">
 
       <!-- Incident Breakdown Chart -->
-      <div class="bg-panelbg border border-slate-700 p-4 rounded-xl shadow-lg flex-1 flex flex-col">
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Phân loại sự cố</div>
-        <div class="relative flex-1 flex items-center justify-center">
+      <div class="bg-panelbg border border-slate-200 p-4 rounded-xl shadow-sm flex-1 flex flex-col min-h-0">
+        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Phân loại sự cố giao thông</div>
+        <div class="relative flex-1 flex items-center justify-center min-h-0">
           <canvas id="incidentChart"></canvas>
         </div>
       </div>
 
       <!-- Quick Incident List -->
-      <div class="bg-panelbg border border-slate-700 p-4 rounded-xl shadow-lg h-48 overflow-y-auto">
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Top điểm tắc hiện tại</div>
-        <div id="incidentList" class="space-y-2 text-xs">
+      <div class="bg-panelbg border border-slate-200 p-4 rounded-xl shadow-sm flex-1 flex flex-col min-h-0">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Top điểm tắc hiện tại</div>
+          <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Thời gian thực</span>
+        </div>
+        <input id="searchInput" type="text" placeholder="Tìm tên đường..."
+               class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 mb-2">
+        <div class="flex items-center space-x-3 mb-2 text-[11px] text-slate-600">
+          <button id="chipJam" class="flex items-center space-x-1 font-medium opacity-100 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-severe"></span><span>Traffic Jam</span>
+          </button>
+          <button id="chipClosed" class="flex items-center space-x-1 font-medium opacity-100 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-moderate"></span><span>Road Closed</span>
+          </button>
+          <button id="chipWorks" class="flex items-center space-x-1 font-medium opacity-100 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]"></span><span>Road Works</span>
+          </button>
+        </div>
+        <div id="incidentList" class="space-y-2 text-xs overflow-y-auto flex-1 min-h-0 pr-1">
           <!-- Populated by JavaScript -->
         </div>
       </div>
@@ -185,4 +259,3 @@
   <script src="/static/app.js"></script>
 </body>
 </html>
-

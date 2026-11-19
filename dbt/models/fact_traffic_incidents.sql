@@ -21,6 +21,8 @@ WITH source_data AS (
         description,
         longitude,
         latitude,
+        geometry_type,
+        geometry_coordinates,
         fetched_at_utc,
         fetched_at_vn,
         CAST(fetched_at_vn AS DATE) AS date_key,
