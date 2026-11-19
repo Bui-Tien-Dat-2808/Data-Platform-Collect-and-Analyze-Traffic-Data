@@ -2,10 +2,10 @@
   "metadata": {
     "city_id": "DAD",
     "city_name": "Đà Nẵng",
-    "ingestion_timestamp_utc": "2026-11-19T08:57:42.603413+00:00",
+    "ingestion_timestamp_utc": "2026-11-19T09:00:01.262195+00:00",
     "source": "TomTom Incident Details API",
     "bbox": "108.1,15.95,108.35,16.15",
-    "total_incidents": 18
+    "total_incidents": 20
   },
   "incidents": [
     {
@@ -15,7 +15,7 @@
       "incident_type": 6,
       "type_label": "Traffic Jam",
       "magnitude": 1,
-      "delay_seconds": 134,
+      "delay_seconds": 139,
       "length_m": 1064.31,
       "road_from": "Bà Nà",
       "road_to": "Đường Cao Tốc Đà Nẵng-Quảng Ngãi / Quốc Lộ 14B",
@@ -117,60 +117,6 @@
     {
       "city_id": "DAD",
       "city_name": "Đà Nẵng",
-      "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTR88972342936012000",
-      "incident_type": 8,
-      "type_label": "Road Closed",
-      "magnitude": 4,
-      "delay_seconds": null,
-      "length_m": 128.6944883595,
-      "road_from": "Quốc Lộ 14B",
-      "road_to": "Quốc Lộ 14B",
-      "description": "Closed",
-      "longitude": 108.1468592417,
-      "latitude": 16.0020952073,
-      "geometry_type": "LineString",
-      "geometry_coordinates": [
-        [
-          108.1468592417,
-          16.0020952073
-        ],
-        [
-          108.1467707288,
-          16.0019852276
-        ],
-        [
-          108.1467144024,
-          16.0019343066
-        ],
-        [
-          108.1466741693,
-          16.0018994192
-        ],
-        [
-          108.1466312539,
-          16.001861873
-        ],
-        [
-          108.1465078723,
-          16.0017639789
-        ],
-        [
-          108.1464059484,
-          16.0016634259
-        ],
-        [
-          108.1462611091,
-          16.0014876997
-        ],
-        [
-          108.1460733544,
-          16.0012261647
-        ]
-      ]
-    },
-    {
-      "city_id": "DAD",
-      "city_name": "Đà Nẵng",
       "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTR88972342864012000",
       "incident_type": 8,
       "type_label": "Road Closed",
@@ -219,6 +165,60 @@
         [
           108.1468592417,
           16.0020952073
+        ]
+      ]
+    },
+    {
+      "city_id": "DAD",
+      "city_name": "Đà Nẵng",
+      "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTR88972342936012000",
+      "incident_type": 8,
+      "type_label": "Road Closed",
+      "magnitude": 4,
+      "delay_seconds": null,
+      "length_m": 128.6944883595,
+      "road_from": "Quốc Lộ 14B",
+      "road_to": "Quốc Lộ 14B",
+      "description": "Closed",
+      "longitude": 108.1468592417,
+      "latitude": 16.0020952073,
+      "geometry_type": "LineString",
+      "geometry_coordinates": [
+        [
+          108.1468592417,
+          16.0020952073
+        ],
+        [
+          108.1467707288,
+          16.0019852276
+        ],
+        [
+          108.1467144024,
+          16.0019343066
+        ],
+        [
+          108.1466741693,
+          16.0018994192
+        ],
+        [
+          108.1466312539,
+          16.001861873
+        ],
+        [
+          108.1465078723,
+          16.0017639789
+        ],
+        [
+          108.1464059484,
+          16.0016634259
+        ],
+        [
+          108.1462611091,
+          16.0014876997
+        ],
+        [
+          108.1460733544,
+          16.0012261647
         ]
       ]
     },
@@ -291,7 +291,7 @@
       "incident_type": 9,
       "type_label": "Road Works",
       "magnitude": 0,
-      "delay_seconds": 32,
+      "delay_seconds": 59,
       "length_m": 553.0251633689,
       "road_from": "Đường Cao Tốc Đà Nẵng-Quảng Ngãi / Cao Tốc La Sơn-Túy Loan",
       "road_to": "Đường Nguyễn Phú Hường",
@@ -483,31 +483,15 @@
       "incident_type": 6,
       "type_label": "Traffic Jam",
       "magnitude": 2,
-      "delay_seconds": 146,
-      "length_m": 418.5429429574,
+      "delay_seconds": 124,
+      "length_m": 368.1511432532,
       "road_from": "Đường Thái Thị Bôi",
       "road_to": "Đường Nguyễn Tất Thành",
       "description": "Queuing traffic",
-      "longitude": 108.2015642357,
-      "latitude": 16.0694468216,
+      "longitude": 108.2015360725,
+      "latitude": 16.0698988338,
       "geometry_type": "LineString",
       "geometry_coordinates": [
-        [
-          108.2015642357,
-          16.0694468216
-        ],
-        [
-          108.2015655768,
-          16.069524627
-        ],
-        [
-          108.2015535068,
-          16.0697271143
-        ],
-        [
-          108.2015414369,
-          16.0698559039
-        ],
         [
           108.2015360725,
           16.0698988338
@@ -573,11 +557,73 @@
     {
       "city_id": "DAD",
       "city_name": "Đà Nẵng",
+      "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802076003000",
+      "incident_type": 6,
+      "type_label": "Traffic Jam",
+      "magnitude": 3,
+      "delay_seconds": 197,
+      "length_m": 291.5924044798,
+      "road_from": "Vòng Xoay",
+      "road_to": "Kiệt 96 Đường Điện Biên Phủ",
+      "description": "Stationary traffic",
+      "longitude": 108.2053126228,
+      "latitude": 16.0660887543,
+      "geometry_type": "LineString",
+      "geometry_coordinates": [
+        [
+          108.2053126228,
+          16.0660887543
+        ],
+        [
+          108.2050913405,
+          16.0660847271
+        ],
+        [
+          108.2044704091,
+          16.0660404271
+        ],
+        [
+          108.2044033539,
+          16.0660351112
+        ],
+        [
+          108.2043443453,
+          16.0660337419
+        ],
+        [
+          108.2039286029,
+          16.0660202908
+        ],
+        [
+          108.2037944925,
+          16.0660162635
+        ],
+        [
+          108.2035530936,
+          16.066000235
+        ],
+        [
+          108.2030381095,
+          16.0659747021
+        ],
+        [
+          108.202775253,
+          16.0659639896
+        ],
+        [
+          108.2025874984,
+          16.0659613316
+        ]
+      ]
+    },
+    {
+      "city_id": "DAD",
+      "city_name": "Đà Nẵng",
       "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802108012002",
       "incident_type": 6,
       "type_label": "Traffic Jam",
       "magnitude": 2,
-      "delay_seconds": 270,
+      "delay_seconds": 223,
       "length_m": 773.1296205746,
       "road_from": "Đường Nguyễn Hoàng / Đường Phạm Ngũ Lão",
       "road_to": "Đường Quang Trung / Đường Trần Cao Vân",
@@ -659,19 +705,121 @@
     {
       "city_id": "DAD",
       "city_name": "Đà Nẵng",
+      "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802108012000",
+      "incident_type": 6,
+      "type_label": "Traffic Jam",
+      "magnitude": 3,
+      "delay_seconds": 197,
+      "length_m": 377.6016812926,
+      "road_from": "Đường Lê Đình Dương",
+      "road_to": "Đường Hùng Vương / Đường Chi Lăng",
+      "description": "Stationary traffic",
+      "longitude": 108.2165805828,
+      "latitude": 16.0643063589,
+      "geometry_type": "LineString",
+      "geometry_coordinates": [
+        [
+          108.2165805828,
+          16.0643063589
+        ],
+        [
+          108.2164907288,
+          16.0648522187
+        ],
+        [
+          108.2162841987,
+          16.0657024586
+        ],
+        [
+          108.2161393595,
+          16.0662858486
+        ],
+        [
+          108.2161004674,
+          16.0664387235
+        ],
+        [
+          108.2159636748,
+          16.0669805501
+        ],
+        [
+          108.2158429754,
+          16.0676256337
+        ]
+      ]
+    },
+    {
+      "city_id": "DAD",
+      "city_name": "Đà Nẵng",
       "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802000059000",
       "incident_type": 6,
       "type_label": "Traffic Jam",
       "magnitude": 2,
-      "delay_seconds": 284,
-      "length_m": 889.6313404897,
+      "delay_seconds": 258,
+      "length_m": 1089.4553323289,
       "road_from": "Vòng Xoay",
       "road_to": "Đường Phan Châu Trinh",
       "description": "Queuing traffic",
-      "longitude": 108.209447248,
-      "latitude": 16.0663904769,
+      "longitude": 108.2075898182,
+      "latitude": 16.0661920134,
       "geometry_type": "LineString",
       "geometry_coordinates": [
+        [
+          108.2075898182,
+          16.0661920134
+        ],
+        [
+          108.2076059115,
+          16.0661933021
+        ],
+        [
+          108.2076689434,
+          16.0661986987
+        ],
+        [
+          108.2077319753,
+          16.0662027259
+        ],
+        [
+          108.2082201373,
+          16.0662416293
+        ],
+        [
+          108.2083502245,
+          16.0662523418
+        ],
+        [
+          108.2084320318,
+          16.0662576578
+        ],
+        [
+          108.2084481251,
+          16.0662603964
+        ],
+        [
+          108.2086238098,
+          16.0662751361
+        ],
+        [
+          108.2090315056,
+          16.0663233827
+        ],
+        [
+          108.2090958786,
+          16.0663341758
+        ],
+        [
+          108.2091468405,
+          16.0663421498
+        ],
+        [
+          108.2092635166,
+          16.0663622861
+        ],
+        [
+          108.209421767,
+          16.0663850804
+        ],
         [
           108.209447248,
           16.0663904769
@@ -906,12 +1054,12 @@
       "incident_id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88963687816043000",
       "incident_type": 6,
       "type_label": "Traffic Jam",
-      "magnitude": 3,
-      "delay_seconds": 142,
+      "magnitude": 2,
+      "delay_seconds": 137,
       "length_m": 625.3276439675,
       "road_from": "Đường Trần Thánh Tông",
       "road_to": "Đường Số 7",
-      "description": "Stationary traffic",
+      "description": "Queuing traffic",
       "longitude": 108.2360212338,
       "latitude": 16.0819942084,
       "geometry_type": "LineString",
@@ -1061,7 +1209,7 @@
       "incident_type": 6,
       "type_label": "Traffic Jam",
       "magnitude": 3,
-      "delay_seconds": 382,
+      "delay_seconds": 383,
       "length_m": 728.3212177762,
       "road_from": "Hẻm 729/73 Võ Văn Kiệt",
       "road_to": "Đường Nguyễn Văn Thoại",
@@ -1148,7 +1296,7 @@
           "from": "Bà Nà",
           "to": "Đường Cao Tốc Đà Nẵng-Quảng Ngãi / Quốc Lộ 14B",
           "length": 1064.31,
-          "delay": 134,
+          "delay": 139,
           "events": [
             {
               "description": "Slow traffic"
@@ -1252,64 +1400,6 @@
       {
         "type": "Feature",
         "properties": {
-          "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTR88972342936012000",
-          "iconCategory": 8,
-          "magnitudeOfDelay": 4,
-          "from": "Quốc Lộ 14B",
-          "to": "Quốc Lộ 14B",
-          "length": 128.6944883595,
-          "delay": null,
-          "events": [
-            {
-              "description": "Closed"
-            }
-          ]
-        },
-        "geometry": {
-          "type": "LineString",
-          "coordinates": [
-            [
-              108.1468592417,
-              16.0020952073
-            ],
-            [
-              108.1467707288,
-              16.0019852276
-            ],
-            [
-              108.1467144024,
-              16.0019343066
-            ],
-            [
-              108.1466741693,
-              16.0018994192
-            ],
-            [
-              108.1466312539,
-              16.001861873
-            ],
-            [
-              108.1465078723,
-              16.0017639789
-            ],
-            [
-              108.1464059484,
-              16.0016634259
-            ],
-            [
-              108.1462611091,
-              16.0014876997
-            ],
-            [
-              108.1460733544,
-              16.0012261647
-            ]
-          ]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
           "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTR88972342864012000",
           "iconCategory": 8,
           "magnitudeOfDelay": 4,
@@ -1361,6 +1451,64 @@
             [
               108.1468592417,
               16.0020952073
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTR88972342936012000",
+          "iconCategory": 8,
+          "magnitudeOfDelay": 4,
+          "from": "Quốc Lộ 14B",
+          "to": "Quốc Lộ 14B",
+          "length": 128.6944883595,
+          "delay": null,
+          "events": [
+            {
+              "description": "Closed"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              108.1468592417,
+              16.0020952073
+            ],
+            [
+              108.1467707288,
+              16.0019852276
+            ],
+            [
+              108.1467144024,
+              16.0019343066
+            ],
+            [
+              108.1466741693,
+              16.0018994192
+            ],
+            [
+              108.1466312539,
+              16.001861873
+            ],
+            [
+              108.1465078723,
+              16.0017639789
+            ],
+            [
+              108.1464059484,
+              16.0016634259
+            ],
+            [
+              108.1462611091,
+              16.0014876997
+            ],
+            [
+              108.1460733544,
+              16.0012261647
             ]
           ]
         }
@@ -1440,7 +1588,7 @@
           "from": "Đường Cao Tốc Đà Nẵng-Quảng Ngãi / Cao Tốc La Sơn-Túy Loan",
           "to": "Đường Nguyễn Phú Hường",
           "length": 553.0251633689,
-          "delay": 32,
+          "delay": 59,
           "events": [
             {
               "description": "Roadworks"
@@ -1650,8 +1798,8 @@
           "magnitudeOfDelay": 2,
           "from": "Đường Thái Thị Bôi",
           "to": "Đường Nguyễn Tất Thành",
-          "length": 418.5429429574,
-          "delay": 146,
+          "length": 368.1511432532,
+          "delay": 124,
           "events": [
             {
               "description": "Queuing traffic"
@@ -1661,22 +1809,6 @@
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [
-              108.2015642357,
-              16.0694468216
-            ],
-            [
-              108.2015655768,
-              16.069524627
-            ],
-            [
-              108.2015535068,
-              16.0697271143
-            ],
-            [
-              108.2015414369,
-              16.0698559039
-            ],
             [
               108.2015360725,
               16.0698988338
@@ -1743,13 +1875,79 @@
       {
         "type": "Feature",
         "properties": {
+          "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802076003000",
+          "iconCategory": 6,
+          "magnitudeOfDelay": 3,
+          "from": "Vòng Xoay",
+          "to": "Kiệt 96 Đường Điện Biên Phủ",
+          "length": 291.5924044798,
+          "delay": 197,
+          "events": [
+            {
+              "description": "Stationary traffic"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              108.2053126228,
+              16.0660887543
+            ],
+            [
+              108.2050913405,
+              16.0660847271
+            ],
+            [
+              108.2044704091,
+              16.0660404271
+            ],
+            [
+              108.2044033539,
+              16.0660351112
+            ],
+            [
+              108.2043443453,
+              16.0660337419
+            ],
+            [
+              108.2039286029,
+              16.0660202908
+            ],
+            [
+              108.2037944925,
+              16.0660162635
+            ],
+            [
+              108.2035530936,
+              16.066000235
+            ],
+            [
+              108.2030381095,
+              16.0659747021
+            ],
+            [
+              108.202775253,
+              16.0659639896
+            ],
+            [
+              108.2025874984,
+              16.0659613316
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802108012002",
           "iconCategory": 6,
           "magnitudeOfDelay": 2,
           "from": "Đường Nguyễn Hoàng / Đường Phạm Ngũ Lão",
           "to": "Đường Quang Trung / Đường Trần Cao Vân",
           "length": 773.1296205746,
-          "delay": 270,
+          "delay": 223,
           "events": [
             {
               "description": "Queuing traffic"
@@ -1833,13 +2031,63 @@
       {
         "type": "Feature",
         "properties": {
+          "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802108012000",
+          "iconCategory": 6,
+          "magnitudeOfDelay": 3,
+          "from": "Đường Lê Đình Dương",
+          "to": "Đường Hùng Vương / Đường Chi Lăng",
+          "length": 377.6016812926,
+          "delay": 197,
+          "events": [
+            {
+              "description": "Stationary traffic"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              108.2165805828,
+              16.0643063589
+            ],
+            [
+              108.2164907288,
+              16.0648522187
+            ],
+            [
+              108.2162841987,
+              16.0657024586
+            ],
+            [
+              108.2161393595,
+              16.0662858486
+            ],
+            [
+              108.2161004674,
+              16.0664387235
+            ],
+            [
+              108.2159636748,
+              16.0669805501
+            ],
+            [
+              108.2158429754,
+              16.0676256337
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
           "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88960802000059000",
           "iconCategory": 6,
           "magnitudeOfDelay": 2,
           "from": "Vòng Xoay",
           "to": "Đường Phan Châu Trinh",
-          "length": 889.6313404897,
-          "delay": 284,
+          "length": 1089.4553323289,
+          "delay": 258,
           "events": [
             {
               "description": "Queuing traffic"
@@ -1849,6 +2097,62 @@
         "geometry": {
           "type": "LineString",
           "coordinates": [
+            [
+              108.2075898182,
+              16.0661920134
+            ],
+            [
+              108.2076059115,
+              16.0661933021
+            ],
+            [
+              108.2076689434,
+              16.0661986987
+            ],
+            [
+              108.2077319753,
+              16.0662027259
+            ],
+            [
+              108.2082201373,
+              16.0662416293
+            ],
+            [
+              108.2083502245,
+              16.0662523418
+            ],
+            [
+              108.2084320318,
+              16.0662576578
+            ],
+            [
+              108.2084481251,
+              16.0662603964
+            ],
+            [
+              108.2086238098,
+              16.0662751361
+            ],
+            [
+              108.2090315056,
+              16.0663233827
+            ],
+            [
+              108.2090958786,
+              16.0663341758
+            ],
+            [
+              108.2091468405,
+              16.0663421498
+            ],
+            [
+              108.2092635166,
+              16.0663622861
+            ],
+            [
+              108.209421767,
+              16.0663850804
+            ],
             [
               108.209447248,
               16.0663904769
@@ -2095,14 +2399,14 @@
         "properties": {
           "id": "TTI-0379dfaf-f417-4563-952b-409b0154be28-TTL88963687816043000",
           "iconCategory": 6,
-          "magnitudeOfDelay": 3,
+          "magnitudeOfDelay": 2,
           "from": "Đường Trần Thánh Tông",
           "to": "Đường Số 7",
           "length": 625.3276439675,
-          "delay": 142,
+          "delay": 137,
           "events": [
             {
-              "description": "Stationary traffic"
+              "description": "Queuing traffic"
             }
           ]
         },
@@ -2265,7 +2569,7 @@
           "from": "Hẻm 729/73 Võ Văn Kiệt",
           "to": "Đường Nguyễn Văn Thoại",
           "length": 728.3212177762,
-          "delay": 382,
+          "delay": 383,
           "events": [
             {
               "description": "Stationary traffic"
