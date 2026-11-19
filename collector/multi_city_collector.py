@@ -160,6 +160,22 @@ def fetch_incidents(bbox_str, api_key, max_retries=3):
 
     raise RuntimeError(f"Failed to fetch incidents after {max_retries} attempts.")
 
+def save_json_atomic(path, payload, max_retries=3):
+    # Windows bind mounts reject O_TRUNC while another process holds the file open
+    # (OSError Errno 22); writing a temp file then renaming avoids truncating it.
+    tmp_path = path.with_name(f"{path.name}.{os.getpid()}.tmp")
+    for attempt in range(max_retries):
+        try:
+            with open(tmp_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+            os.replace(tmp_path, path)
+            return
+        except OSError as error:
+            if attempt == max_retries - 1:
+                raise
+            logger.warning(f"Saving {path.name} failed ({error}); retrying in 1s...")
+            time.sleep(1)
+
 def upload_to_minio(file_path, city_id, batch_dt):
     try:
         import urllib3
@@ -234,8 +250,7 @@ def run_multi_city_collector(config_path=CONFIG_PATH):
 
         # Save city sample locally
         city_file = SAMPLE_OUTPUT_DIR / f"sample_incidents_{c_id.lower()}.json"
-        with open(city_file, "w", encoding="utf-8") as f:
-            json.dump(city_payload, f, ensure_ascii=False, indent=2)
+        save_json_atomic(city_file, city_payload)
 
         # Upload to MinIO Bronze
         upload_to_minio(city_file, c_id, batch_timestamp)
@@ -244,8 +259,7 @@ def run_multi_city_collector(config_path=CONFIG_PATH):
 
     # Save combined sample
     combined_file = SAMPLE_OUTPUT_DIR / "sample_incidents.json"
-    with open(combined_file, "w", encoding="utf-8") as f:
-        json.dump(all_city_results, f, ensure_ascii=False, indent=2)
+    save_json_atomic(combined_file, all_city_results)
 
     logger.info("Multi-City ingestion cycle completed successfully!")
     return all_city_results
